@@ -1,0 +1,12 @@
+.idea/
+.vscode/
+**/node_modules/
+./uploadFiles
+./upload
+./public
+
+./public/images
+/public/images
+**/public/*
+*/public/*
+.env
