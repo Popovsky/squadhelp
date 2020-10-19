@@ -15,5 +15,6 @@ mongoose.connect(
 );
 
 mongoose.set('debug', true);
+mongoose.set('useCreateIndex', true);
 
 module.exports = mongoose;

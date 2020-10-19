@@ -2,17 +2,19 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class RefreshToken extends Model {
-    static associate(models) {}
+    static associate({ User }) {
+      RefreshToken.belongsTo(User, {
+        foreignKey: 'userId',
+      });
+    }
   }
   RefreshToken.init(
     {
-      UserId: {
+      userId: {
         type: DataTypes.INTEGER,
-        field: 'userId',
         allowNull: false,
         references: {
-          model: 'Users',
-          key: 'id',
+          model: 'User',
         },
       },
       token: {

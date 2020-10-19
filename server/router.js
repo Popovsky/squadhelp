@@ -8,6 +8,9 @@ const validators = require('./middlewares/validators');
 const chatController = require('./controllers/chatController');
 const upload = require('./utils/fileUpload');
 const router = express.Router();
+const authRouter = require('./routes/auth');
+
+router.use('/auth', authRouter);
 
 router.post(
   '/registration',

@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      'Banks',
+      'CreditCards',
       [
         {
           cardNumber: '4564654564564564',
@@ -11,6 +11,8 @@ module.exports = {
           expiry: '11/20',
           cvc: '453',
           balance: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           cardNumber: '4111111111111111',
@@ -18,6 +20,8 @@ module.exports = {
           expiry: '12/22',
           cvc: '111',
           balance: 999999,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           cardNumber: '4000000000000000',
@@ -25,6 +29,8 @@ module.exports = {
           expiry: '12/22',
           cvc: '000',
           balance: 999999,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
@@ -32,6 +38,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Banks', null, {});
+    await queryInterface.bulkDelete('CreditCards', null, {});
   },
 };

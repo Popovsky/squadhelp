@@ -6,6 +6,8 @@ module.exports = {
     port: 5432,
     database: 'squadhelp-dev',
     dialect: 'postgres',
+    migrationStorage: 'json',
+    seederStorage: 'json',
   },
   test: {},
   production: {},
