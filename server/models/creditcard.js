@@ -1,8 +1,8 @@
-"use strict";
-
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define(
-    "Banks",
+  class CreditCard extends Model {}
+  CreditCard.init(
     {
       cardNumber: {
         type: DataTypes.STRING,
@@ -28,7 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      timestamps: false,
+      sequelize,
+      modelName: 'CreditCard',
     }
   );
+  return CreditCard;
 };

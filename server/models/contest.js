@@ -1,15 +1,18 @@
-"use strict";
-
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const Contest = sequelize.define(
-    "Contests",
+  class Contest extends Model {
+    static associate({ User, Offer }) {
+      Contest.belongsTo(User, {
+        foreignKey: 'userId',
+      });
+      Contest.hasMany(Offer, {
+        foreignKey: 'contestId',
+      });
+    }
+  }
+  Contest.init(
     {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-      },
       orderId: {
         allowNull: false,
         type: DataTypes.STRING,
@@ -18,13 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: "Users",
-          key: "id",
+          model: 'Users',
+          key: 'id',
         },
       },
       contestType: {
         allowNull: false,
-        type: DataTypes.ENUM("name", "tagline", "logo"),
+        type: DataTypes.ENUM('name', 'tagline', 'logo'),
       },
       fileName: {
         allowNull: true,
@@ -70,10 +73,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.STRING,
       },
-      createdAt: {
-        allowNull: true,
-        type: DataTypes.STRING,
-      },
       status: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -88,9 +87,9 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      timestamps: false,
+      sequelize,
+      modelName: 'Contest',
     }
   );
-
   return Contest;
 };

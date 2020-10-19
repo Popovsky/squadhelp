@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Offers", {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('Offers', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,38 +12,40 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Users",
-          key: "id",
+          model: 'Users',
         },
       },
       contestId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Contests",
-          key: "id",
+          model: 'Contests',
         },
       },
       text: {
         type: Sequelize.STRING,
-        allowNull: true,
       },
       fileName: {
         type: Sequelize.STRING,
-        allowNull: true,
       },
       originalFileName: {
         type: Sequelize.STRING,
-        allowNull: true,
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue: "pending",
+        defaultValue: 'pending',
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Offers");
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('Offers');
   },
 };

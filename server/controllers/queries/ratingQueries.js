@@ -1,22 +1,22 @@
-const bd = require("../../models/index");
-const ServerError = require("../../errors/ServerError");
+const { Rating } = require('../../models/index');
+const ServerError = require('../../errors/ServerError');
 
 module.exports.updateRating = async (data, predicate, transaction) => {
-  const [updatedCount, [updatedRating]] = await bd.Ratings.update(data, {
+  const [updatedCount, [updatedRating]] = await Rating.update(data, {
     where: predicate,
     returning: true,
     transaction,
   });
   if (updatedCount !== 1) {
-    throw new ServerError("cannot update mark on this offer");
+    throw new ServerError('cannot update mark on this offer');
   }
   return updatedRating.dataValues;
 };
 
 module.exports.createRating = async (data, transaction) => {
-  const result = await bd.Ratings.create(data, { transaction });
+  const result = await Rating.create(data, { transaction });
   if (!result) {
-    throw new ServerError("cannot mark offer");
+    throw new ServerError('cannot mark offer');
   } else {
     return result.get({ plain: true });
   }

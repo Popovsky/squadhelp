@@ -1,7 +1,13 @@
-const { Banks, Sequelize } = require('./../models');
 const jwt = require('jsonwebtoken');
 const CONSTANTS = require('./../constants');
-const bd = require('../models/index');
+const {
+  sequelize,
+  Contest,
+  Sequelize,
+  CreditCard,
+  Offer,
+  Rating,
+} = require('../models');
 const NotFound = require('../errors/UserNotFoundError');
 const ServerError = require('../errors/ServerError');
 const UtilFunctions = require('../utils/functions');
@@ -98,16 +104,15 @@ module.exports.changeMark = async (req, res, next) => {
   const { isFirst, offerId, mark, creatorId } = req.body;
   const userId = req.tokenData.userId;
   try {
-    transaction = await bd.sequelize.transaction({
-      isolationLevel:
-        bd.Sequelize.Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
+    transaction = await sequelize.transaction({
+      isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
     });
     const query = getQuery(offerId, userId, mark, isFirst, transaction);
     await query();
-    const offersArray = await bd.Ratings.findAll({
+    const offersArray = await Rating.findAll({
       include: [
         {
-          model: bd.Offers,
+          model: Offer,
           required: true,
           where: { userId: creatorId },
         },
@@ -130,14 +135,14 @@ module.exports.changeMark = async (req, res, next) => {
 };
 
 module.exports.payment = async (req, res, next) => {
-  const transaction = await bd.sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     const {
       body: { cvc, expiry, price, number },
     } = req;
     const squadhelpCreditCardNumber = process.env.SQUADHELP_CREDIT_CARD_NUMBER;
 
-    const clientCreditCard = await Banks.findOne({
+    const clientCreditCard = await CreditCard.findOne({
       where: {
         cardNumber: number.replace(/ /g, ''),
         expiry,
@@ -146,7 +151,7 @@ module.exports.payment = async (req, res, next) => {
       transaction,
     });
 
-    const squadhelpCreditCard = await Banks.findOne({
+    const squadhelpCreditCard = await CreditCard.findOne({
       where: {
         cardNumber: squadhelpCreditCardNumber,
       },
@@ -182,7 +187,7 @@ module.exports.payment = async (req, res, next) => {
         prize: prize,
       });
     });
-    await bd.Contests.bulkCreate(req.body.contests, transaction);
+    await Contest.bulkCreate(req.body.contests, transaction);
     await transaction.commit();
     res.send();
   } catch (err) {
@@ -218,15 +223,15 @@ module.exports.updateUser = async (req, res, next) => {
 module.exports.cashout = async (req, res, next) => {
   let transaction;
   try {
-    transaction = await bd.sequelize.transaction();
+    transaction = await sequelize.transaction();
     const updatedUser = await userQueries.updateUser(
-      { balance: bd.sequelize.literal('balance - ' + req.body.sum) },
+      { balance: sequelize.literal('balance - ' + req.body.sum) },
       req.tokenData.userId,
       transaction
     );
     await bankQueries.updateBankBalance(
       {
-        balance: bd.sequelize.literal(`CASE 
+        balance: sequelize.literal(`CASE 
                 WHEN "cardNumber"='${req.body.number.replace(
                   / /g,
                   ''
@@ -245,7 +250,7 @@ module.exports.cashout = async (req, res, next) => {
       },
       {
         cardNumber: {
-          [bd.sequelize.Op.in]: [
+          [sequelize.Op.in]: [
             CONSTANTS.SQUADHELP_BANK_NUMBER,
             req.body.number.replace(/ /g, ''),
           ],
