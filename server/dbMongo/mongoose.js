@@ -9,6 +9,7 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   err => {
     if (err) {
+      console.error(err);
       process.exit(1);
     }
   }

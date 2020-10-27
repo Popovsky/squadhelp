@@ -49,7 +49,7 @@ exports.refreshAuth = async (req, res, next) => {
         token: refreshToken,
       },
     });
-    if (refreshTokenInstance) {
+    if (refreshTokenInstance && refreshTokenInstance.isUnexpired()) {
       const data = await AuthService.refreshSession(refreshTokenInstance);
       return res.send({
         data,

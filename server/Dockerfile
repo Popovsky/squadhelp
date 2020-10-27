@@ -1,22 +1,19 @@
-FROM node:10.13.0
+FROM node:14.14.0-alpine3.10
 
-ARG NODE_ENV="development"
+ENV NODE_ENV="production"
+ENV STATIC_DATA_PATH="/var/www/html/images/"
 
-RUN mkdir /server
-
-RUN mkdir -p /var/www/html/images
+RUN mkdir /server \
+    && mkdir -p ${STATIC_DATA_PATH}
 
 WORKDIR /server
 
-COPY package*.json ./
-
-RUN npm install -g nodemon
-RUN npm install -g sequelize-cli
-
-RUN npm install
-
 COPY . .
 
-EXPOSE 3000
+RUN npm install -g sequelize-cli \
+    && npm install
 
-CMD npm start
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]

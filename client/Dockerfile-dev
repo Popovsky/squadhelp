@@ -1,0 +1,14 @@
+FROM node
+
+RUN mkdir /client
+
+WORKDIR /client
+
+COPY . .
+
+RUN npm i --no-optional \
+    && npm audit fix -f
+
+EXPOSE 3000
+
+CMD npm start

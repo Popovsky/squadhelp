@@ -1,55 +1,44 @@
-version: '2'
+version: '3.8'
 services:
-
-  front-react:
+  frontend:
     build:
       context: ./client
-
+      dockerfile: Dockerfile-dev
     environment:
-      NODE_ENV: development
+      NODE_ENV: development      
+    stdin_open: true
+    tty: true
     depends_on:
-      - server-dev
+      - backend
     volumes:
       - ./client:/client
-      - /client/node_modules
     ports:
-      - "5000:5000"
+      - '3000:3000'
 
-  server-dev:
+  backend:
     build:
       context: ./server
-
     environment:
       NODE_ENV: development
-    ports:
-      - "3000:3000"
+      STATIC_DATA_PATH: /server/public
     depends_on:
-      - db-dev
-      - mongo-dev
+      - postgres-db
+      - mongo-db
     volumes:
-      - ./var/www/html/images:/var/www/html/images
       - ./server:/server
-      - /server/node_modules
-
-      
-  mongo-dev: 
-    image: mongo:3.6
-#     environment:
-#      - MONGO_INITDB_ROOT_USERNAME=mongo
-#      - MONGO_INITDB_ROOT_PASSWORD=password
     ports:
-      - "27017:27017"
-    
-    
-    
-  db-dev:
-    image: postgres:10
+      - '5000:5000'
+
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+
+  postgres-db:
+    image: postgres:latest
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=todo-dev
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_USER=app_server
+      - POSTGRES_DB=squadhelp-db
     ports:
-      - "5432:5432"
-
-volumes:
-  server-dev:
+      - '5432:5432'

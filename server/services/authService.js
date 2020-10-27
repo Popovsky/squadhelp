@@ -1,12 +1,11 @@
 const _ = require('lodash');
+const { Sequelize, User, RefreshToken } = require('./../models');
 const JWTService = require('./jwtService');
-const { DEVICES_PER_USER_LIMIT } = require('../constants');
+const { DEVICES_PER_USER_LIMIT, REFRESH_TOKEN_EXP } = require('../constants');
+const { v4: uuidV4 } = require('uuid');
 
 exports.createSession = async userInstance => {
-  const { accessToken, refreshToken } = await JWTService.signTokenPair({
-    id: userInstance.getDataValue('id'),
-    role: userInstance.getDataValue('role'),
-  });
+  const { accessToken, refreshToken } = await createTokenPair(userInstance);
 
   if ((await userInstance.countRefreshTokens()) >= DEVICES_PER_USER_LIMIT) {
     const [
@@ -14,19 +13,15 @@ exports.createSession = async userInstance => {
     ] = await userInstance.getRefreshTokens({
       order: [['updatedAt', 'ASC']],
     });
-    await oldestUserRefreshTokenInstance.update({
-      token: refreshToken,
-    });
+    await oldestUserRefreshTokenInstance.update(refreshToken);
   } else {
-    await userInstance.createRefreshToken({
-      token: refreshToken,
-    });
+    await userInstance.createRefreshToken(refreshToken);
   }
   return {
     user: prepareUser(userInstance),
     tokenPair: {
       accessToken,
-      refreshToken,
+      refreshToken: refreshToken.token,
     },
   };
 };
@@ -34,19 +29,14 @@ exports.createSession = async userInstance => {
 exports.refreshSession = async refreshTokenInstance => {
   const userInstance = await refreshTokenInstance.getUser();
   if (userInstance) {
-    const { accessToken, refreshToken } = await JWTService.signTokenPair({
-      id: userInstance.getDataValue('id'),
-      role: userInstance.getDataValue('role'),
-    });
+    const { accessToken, refreshToken } = await createTokenPair(userInstance);
+    await refreshTokenInstance.update(refreshToken);
 
-    await refreshTokenInstance.update({
-      token: refreshToken,
-    });
     return {
       user: prepareUser(userInstance),
       tokenPair: {
         accessToken,
-        refreshToken,
+        refreshToken: refreshToken.token,
       },
     };
   }
@@ -55,4 +45,19 @@ exports.refreshSession = async refreshTokenInstance => {
 function prepareUser(userInstance) {
   const userDataValues = userInstance.get();
   return _.omit(userDataValues, ['password']);
+}
+
+async function createTokenPair(userInstance) {
+  return {
+    accessToken: await JWTService.signAccessToken({
+      userId: userInstance.get('id'),
+      userRole: userInstance.get('role'),
+    }),
+    refreshToken: {
+      token: uuidV4(),
+      expiredIn: Sequelize.literal(
+        `CURRENT_TIMESTAMP + '${REFRESH_TOKEN_EXP}'::interval`
+      ),
+    },
+  };
 }
