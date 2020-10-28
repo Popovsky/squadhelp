@@ -1,27 +1,26 @@
-import { put } from "redux-saga/effects";
-import ACTION from "../actions/actionTypes";
-import history from "../browserHistory";
-import React from "react";
-import * as restController from "../api/rest/restController";
+import { createStore } from 'redux';
+import { put } from 'redux-saga/effects';
+import * as AuthActionCreators from '../actions/authActionCreators';
+import * as Api from './../api/http';
 
-export function* loginSaga(action) {
-  yield put({ type: ACTION.AUTH_ACTION_REQUEST });
-  try {
-    yield restController.loginRequest(action.data);
-    history.replace("/");
-    yield put({ type: ACTION.AUTH_ACTION_SUCCESS });
-  } catch (err) {
-    yield put({ type: ACTION.AUTH_ACTION_ERROR, error: err.response });
-  }
-}
+const createAuthSaga = apiMethod => {
+  const authSaga = function* (action) {
+    yield put(AuthActionCreators.authRequest());
+    try {
+      const {
+        payload: { values },
+      } = action;
+      const {
+        data: { data },
+      } = yield apiMethod(values);
+      yield put(AuthActionCreators.authRequestSuccess(data));
+    } catch (err) {
+      yield put(AuthActionCreators.authRequestFailed(err));
+    }
+  };
+  return authSaga;
+};
 
-export function* registerSaga(action) {
-  yield put({ type: ACTION.AUTH_ACTION_REQUEST });
-  try {
-    yield restController.registerRequest(action.data);
-    history.replace("/");
-    yield put({ type: ACTION.AUTH_ACTION_SUCCESS });
-  } catch (e) {
-    yield put({ type: ACTION.AUTH_ACTION_ERROR, error: e.response });
-  }
-}
+export const loginSaga = createAuthSaga(Api.auth.login);
+export const signUpSaga = createAuthSaga(Api.auth.signUp);
+export const refreshSaga = createAuthSaga(Api.auth.refresh);

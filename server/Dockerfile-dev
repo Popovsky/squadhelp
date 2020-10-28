@@ -1,6 +1,6 @@
 FROM node:14.15.0-stretch
 
-ENV NODE_ENV="production"
+ENV NODE_ENV="development"
 ENV STATIC_DATA_PATH="/var/www/html/images/"
 
 RUN mkdir /server \
@@ -14,4 +14,4 @@ RUN npm install
 
 EXPOSE 5000
 
-CMD npm start
+CMD npm run start:dev

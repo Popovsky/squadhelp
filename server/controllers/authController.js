@@ -2,7 +2,7 @@ const createHttpError = require('http-errors');
 const { User, RefreshToken } = require('./../models');
 const AuthService = require('./../services/authService');
 
-exports.signInUser = async (req, res, next) => {
+exports.login = async (req, res, next) => {
   try {
     const {
       body: { email, password },
@@ -18,12 +18,13 @@ exports.signInUser = async (req, res, next) => {
         data,
       });
     }
-    next(createHttpError(401, 'Incorrect password or email'));
+    next(createHttpError(403, 'Incorrect password or email'));
   } catch (err) {
     next(err);
   }
 };
-exports.signUpUser = async (req, res, next) => {
+
+exports.signUp = async (req, res, next) => {
   try {
     const { body } = req;
     const userInstance = await User.create(body);
@@ -39,7 +40,7 @@ exports.signUpUser = async (req, res, next) => {
   }
 };
 
-exports.refreshAuth = async (req, res, next) => {
+exports.refresh = async (req, res, next) => {
   try {
     const {
       body: { refreshToken },

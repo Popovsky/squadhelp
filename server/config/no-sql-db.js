@@ -1,10 +1,10 @@
 module.exports = {
   development: {
     database: 'chat',
-    host: 'mongo-db',
+    host: 'mongodb_host',
   },
   production: {
     database: 'chat',
-    host: 'mongo-db',
+    host: 'mongodb_host',
   },
 };

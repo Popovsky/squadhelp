@@ -1,17 +1,17 @@
-import React from "react";
-import { onlyForNotAuthorize } from "../../actions/actionCreator";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import Spinner from "../Spinner/Spinner";
+import React from 'react';
+import { onlyForNotAuthorize } from '../../actions/actionCreator';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import Spinner from '../Spinner/Spinner';
 
-const OnlyNotAuthorizedUserHoc = (Component) => {
-  const mapStateToProps = (state) => {
-    return state.userStore;
+const OnlyNotAuthorizedUserHoc = Component => {
+  const mapStateToProps = state => {
+    return state.auth;
   };
 
-  const mapDispatchToProps = (dispatch) => {
+  const mapDispatchToProps = dispatch => {
     return {
-      checkAuth: (data) => dispatch(onlyForNotAuthorize(data)),
+      checkAuth: data => dispatch(onlyForNotAuthorize(data)),
     };
   };
 

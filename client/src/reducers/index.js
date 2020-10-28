@@ -15,7 +15,7 @@ import userProfileReducer from './userProfileReducer';
 const rootReducer = combineReducers({
   form: formReducer,
   userStore: getUserReducer,
-  auth: authReducer,
+  auth: authReducer, // quality mark
   dataForContest: dataForContestReducer,
   payment: payReducer,
   contestByIdStore: getContestByIdReducer,

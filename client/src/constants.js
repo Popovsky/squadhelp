@@ -1,5 +1,7 @@
 const env = process.env.NODE_ENV || 'development';
-const serverIP = 'backend';
+const serverIP = 'localhost';
+
+export const REFRESH_TOKEN_KEY = 'refreshToken';
 
 export default {
   CUSTOMER: 'customer',

@@ -1,5 +1,5 @@
 # start build start
-FROM node:14.14.0-alpine3.10 as build-stage
+FROM node:14.15.0-stretch as build-stage
 
 ENV NODE_ENV="production"
 

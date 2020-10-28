@@ -1,8 +1,13 @@
 const _ = require('lodash');
 const { Sequelize, User, RefreshToken } = require('./../models');
-const JWTService = require('./jwtService');
+const JwtService = require('./jwtService');
 const { DEVICES_PER_USER_LIMIT, REFRESH_TOKEN_EXP } = require('../constants');
 const { v4: uuidV4 } = require('uuid');
+const config = require('../config/app');
+
+const {
+  jwt: { tokenExpiresIn, tokenSecret },
+} = config;
 
 exports.createSession = async userInstance => {
   const { accessToken, refreshToken } = await createTokenPair(userInstance);
@@ -49,10 +54,16 @@ function prepareUser(userInstance) {
 
 async function createTokenPair(userInstance) {
   return {
-    accessToken: await JWTService.signAccessToken({
-      userId: userInstance.get('id'),
-      userRole: userInstance.get('role'),
-    }),
+    accessToken: await JwtService.sign(
+      {
+        userId: userInstance.get('id'),
+        userRole: userInstance.get('role'),
+      },
+      tokenSecret,
+      {
+        expiresIn: tokenExpiresIn,
+      }
+    ),
     refreshToken: {
       token: uuidV4(),
       expiredIn: Sequelize.literal(

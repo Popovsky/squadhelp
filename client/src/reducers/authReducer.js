@@ -1,40 +1,35 @@
-import ACTION from "../actions/actionTypes";
+import produce from 'immer';
+import AUTH_ACTION_TYPES from '../actions/authActionTypes';
+import createReducer from './helpers/createReducer';
 
 const initialState = {
+  user: null,
   isFetching: false,
   error: null,
 };
 
-export default function (state = initialState, action) {
-  switch (action.type) {
-    case ACTION.AUTH_ACTION_REQUEST: {
-      return {
-        isFetching: true,
-        error: null,
-      };
-    }
-    case ACTION.AUTH_ACTION_SUCCESS: {
-      return {
-        isFetching: false,
-        error: null,
-      };
-    }
-    case ACTION.AUTH_ACTION_ERROR: {
-      return {
-        isFetching: false,
-        error: action.error,
-      };
-    }
-    case ACTION.AUTH_ACTION_CLEAR_ERROR: {
-      return {
-        ...state,
-        error: null,
-      };
-    }
-    case ACTION.AUTH_ACTION_CLEAR: {
-      return initialState;
-    }
-    default:
-      return state;
-  }
-}
+const handlers = {
+  [AUTH_ACTION_TYPES.AUTH_REQUEST]: produce(draftState => {
+    draftState.isFetching = true;
+  }),
+  [AUTH_ACTION_TYPES.AUTH_REQUEST_SUCCESS]: produce((draftState, action) => {
+    const {
+      payload: {
+        data: { user },
+      },
+    } = action;
+    draftState.isFetching = false;
+    draftState.user = user;
+  }),
+  [AUTH_ACTION_TYPES.AUTH_REQUEST_FAILED]: produce((draftState, action) => {
+    const {
+      payload: { error },
+    } = action;
+    draftState.isFetching = false;
+    draftState.error = error;
+  }),
+};
+
+const authReducer = createReducer(initialState, handlers);
+
+export default authReducer;

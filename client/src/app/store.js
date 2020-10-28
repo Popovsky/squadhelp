@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import rootReducer from './reducers';
-import rootSaga from './sagas';
-import { initSocket } from './api/ws/socketController';
+import rootReducer from './../reducers';
+import rootSaga from './../sagas';
+import { initSocket } from './../api/ws/socketController';
 
 const sagaMiddleware = createSagaMiddleware();
 

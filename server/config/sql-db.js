@@ -1,10 +1,10 @@
 module.exports = {
   development: {
+    host: 'postgres_host',
+    port: 5432,
     username: 'app_server',
     password: 'qwerty',
-    host: 'postgres-db',
-    port: 5432,
-    database: 'squadhelp-db',
+    database: 'db',
     dialect: 'postgres',
   },
   test: {},
