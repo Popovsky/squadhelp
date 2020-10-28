@@ -1,29 +1,29 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   getContestsForCreative,
   clearContestList,
   setNewCreatorFilter,
   getDataForContest,
-} from "../../actions/actionCreator";
-import ContestsContainer from "../../components/ContestsContainer/ContestsContainer";
-import ContestBox from "../ContestBox/ContestBox";
-import styles from "./CreatorDashboard.module.sass";
-import queryString from "query-string";
-import classNames from "classnames";
-import isEqual from "lodash/isEqual";
-import TryAgain from "../../components/TryAgain/TryAgain";
+} from '../../actions/actionCreator';
+import ContestsContainer from '../../components/ContestsContainer/ContestsContainer';
+import ContestBox from '../ContestBox/ContestBox';
+import styles from './CreatorDashboard.module.sass';
+import queryString from 'query-string';
+import classNames from 'classnames';
+import { isEqual } from 'lodash';
+import TryAgain from '../../components/TryAgain/TryAgain';
 
 const types = [
-  "",
-  "name,tagline,logo",
-  "name",
-  "tagline",
-  "logo",
-  "name,tagline",
-  "logo,tagline",
-  "name,logo",
+  '',
+  'name,tagline,logo',
+  'name',
+  'tagline',
+  'logo',
+  'name,tagline',
+  'logo,tagline',
+  'name,logo',
 ];
 
 class CreatorDashboard extends React.Component {
@@ -43,7 +43,7 @@ class CreatorDashboard extends React.Component {
       <select
         onChange={({ target }) =>
           this.changePredicate({
-            name: "typeIndex",
+            name: 'typeIndex',
             value: types.indexOf(target.value),
           })
         }
@@ -75,7 +75,7 @@ class CreatorDashboard extends React.Component {
       <select
         onChange={({ target }) =>
           this.changePredicate({
-            name: "industry",
+            name: 'industry',
             value: target.value,
           })
         }
@@ -102,7 +102,7 @@ class CreatorDashboard extends React.Component {
       this.getContests(this.props.creatorFilter);
   }
 
-  getContests = (filter) => {
+  getContests = filter => {
     this.props.getContests(
       Object.assign(
         {},
@@ -118,31 +118,31 @@ class CreatorDashboard extends React.Component {
   changePredicate = ({ name, value }) => {
     const { creatorFilter } = this.props;
     this.props.newFilter({
-      [name]: value === "Choose industry" ? null : value,
+      [name]: value === 'Choose industry' ? null : value,
     });
     this.parseParamsToUrl({
       ...creatorFilter,
-      ...{ [name]: value === "Choose industry" ? null : value },
+      ...{ [name]: value === 'Choose industry' ? null : value },
     });
   };
 
-  parseParamsToUrl = (creatorFilter) => {
+  parseParamsToUrl = creatorFilter => {
     const obj = {};
-    Object.keys(creatorFilter).forEach((el) => {
+    Object.keys(creatorFilter).forEach(el => {
       if (creatorFilter[el]) obj[el] = creatorFilter[el];
     });
-    this.props.history.push("/Dashboard?" + queryString.stringify(obj));
+    this.props.history.push('/Dashboard?' + queryString.stringify(obj));
   };
 
-  parseUrlForParams = (search) => {
+  parseUrlForParams = search => {
     const obj = queryString.parse(search);
     const filter = {
       typeIndex: obj.typeIndex || 1,
-      contestId: obj.contestId ? obj.contestId : "",
-      industry: obj.industry ? obj.industry : "",
-      awardSort: obj.awardSort || "asc",
+      contestId: obj.contestId ? obj.contestId : '',
+      industry: obj.industry ? obj.industry : '',
+      awardSort: obj.awardSort || 'asc',
       ownEntries:
-        typeof obj.ownEntries === "undefined" ? false : obj.ownEntries,
+        typeof obj.ownEntries === 'undefined' ? false : obj.ownEntries,
     };
     if (!isEqual(filter, this.props.creatorFilter)) {
       this.props.newFilter(filter);
@@ -155,7 +155,7 @@ class CreatorDashboard extends React.Component {
   getPredicateOfRequest = () => {
     const obj = {};
     const { creatorFilter } = this.props;
-    Object.keys(creatorFilter).forEach((el) => {
+    Object.keys(creatorFilter).forEach(el => {
       if (creatorFilter[el]) {
         obj[el] = creatorFilter[el];
       }
@@ -164,7 +164,7 @@ class CreatorDashboard extends React.Component {
     return obj;
   };
 
-  loadMore = (startFrom) => {
+  loadMore = startFrom => {
     this.props.getContests(
       Object.assign(
         {},
@@ -192,8 +192,8 @@ class CreatorDashboard extends React.Component {
     return array;
   };
 
-  goToExtended = (contestId) => {
-    this.props.history.push("/contest/" + contestId);
+  goToExtended = contestId => {
+    this.props.history.push('/contest/' + contestId);
   };
 
   tryLoadAgain = () => {
@@ -216,7 +216,7 @@ class CreatorDashboard extends React.Component {
             <div
               onClick={() =>
                 this.changePredicate({
-                  name: "ownEntries",
+                  name: 'ownEntries',
                   value: !creatorFilter.ownEntries,
                 })
               }
@@ -236,7 +236,7 @@ class CreatorDashboard extends React.Component {
                 type="text"
                 onChange={({ target }) =>
                   this.changePredicate({
-                    name: "contestId",
+                    name: 'contestId',
                     value: target.value,
                   })
                 }
@@ -256,7 +256,7 @@ class CreatorDashboard extends React.Component {
               <select
                 onChange={({ target }) =>
                   this.changePredicate({
-                    name: "awardSort",
+                    name: 'awardSort',
                     value: target.value,
                   })
                 }
@@ -288,16 +288,16 @@ class CreatorDashboard extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { contestsList, dataForContest } = state;
   return { ...contestsList, dataForContest };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    getContests: (data) => dispatch(getContestsForCreative(data)),
+    getContests: data => dispatch(getContestsForCreative(data)),
     clearContestsList: () => dispatch(clearContestList()),
-    newFilter: (filter) => dispatch(setNewCreatorFilter(filter)),
+    newFilter: filter => dispatch(setNewCreatorFilter(filter)),
     getDataForContest: () => dispatch(getDataForContest()),
   };
 };

@@ -1,10 +1,10 @@
-import WebSocket from "./WebSocket";
-import CONTANTS from "../../../constants";
+import WebSocket from './WebSocket';
+import CONTANTS from '../../../constants';
 import {
   addMessage,
   changeBlockStatusInStore,
-} from "../../../actions/actionCreator";
-import isEqual from "lodash/isEqual";
+} from '../../../actions/actionCreator';
+import { isEqual } from 'lodash';
 
 class ChatSocket extends WebSocket {
   constructor(dispatch, getState, room) {
@@ -16,10 +16,10 @@ class ChatSocket extends WebSocket {
     this.onChangeBlockStatus();
   };
   onChangeBlockStatus = () => {
-    this.socket.on(CONTANTS.CHANGE_BLOCK_STATUS, (data) => {
+    this.socket.on(CONTANTS.CHANGE_BLOCK_STATUS, data => {
       const { message } = data;
       const { messagesPreview } = this.getState().chatStore;
-      messagesPreview.forEach((preview) => {
+      messagesPreview.forEach(preview => {
         if (isEqual(preview.participants, message.participants))
           preview.blackList = message.blackList;
       });
@@ -30,11 +30,11 @@ class ChatSocket extends WebSocket {
   };
 
   onNewMessage = () => {
-    this.socket.on("newMessage", (data) => {
+    this.socket.on('newMessage', data => {
       const { message, preview } = data.message;
       const { messagesPreview } = this.getState().chatStore;
       let isNew = true;
-      messagesPreview.forEach((preview) => {
+      messagesPreview.forEach(preview => {
         if (isEqual(preview.participants, message.participants)) {
           preview.text = message.body;
           preview.sender = message.sender;
@@ -49,12 +49,12 @@ class ChatSocket extends WebSocket {
     });
   };
 
-  subscribeChat = (id) => {
-    this.socket.emit("subscribeChat", id);
+  subscribeChat = id => {
+    this.socket.emit('subscribeChat', id);
   };
 
-  unsubscribeChat = (id) => {
-    this.socket.emit("unsubscribeChat", id);
+  unsubscribeChat = id => {
+    this.socket.emit('unsubscribeChat', id);
   };
 }
 

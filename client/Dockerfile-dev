@@ -1,4 +1,4 @@
-FROM node
+FROM node:14.15.0-stretch
 
 RUN mkdir /client
 
@@ -6,8 +6,7 @@ WORKDIR /client
 
 COPY . .
 
-RUN npm i --no-optional \
-    && npm audit fix -f
+RUN npm i
 
 EXPOSE 3000
 

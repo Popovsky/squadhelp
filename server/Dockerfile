@@ -10,9 +10,8 @@ WORKDIR /server
 
 COPY . .
 
-RUN npm install -g sequelize-cli \
-    && npm install
-
+RUN npm install -g sequelize-cli
+RUN npm install
 
 EXPOSE 5000
 

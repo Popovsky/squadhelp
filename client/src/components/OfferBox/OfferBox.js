@@ -1,23 +1,23 @@
-import React from "react";
-import styles from "./OfferBox.module.sass";
-import CONSTANTS from "../../constants";
-import { connect } from "react-redux";
-import Rating from "react-rating";
+import React from 'react';
+import styles from './OfferBox.module.sass';
+import CONSTANTS from '../../constants';
+import { connect } from 'react-redux';
+import Rating from 'react-rating';
 import {
   changeMark,
   clearChangeMarkError,
   goToExpandedDialog,
   changeShowImage,
   changeModalShow,
-} from "../../actions/actionCreator";
-import { withRouter } from "react-router-dom";
-import isEqual from "lodash/isEqual";
-import classNames from "classnames";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import "./confirmStyle.css";
+} from '../../actions/actionCreator';
+import { withRouter } from 'react-router-dom';
+import { isEqual } from 'lodash';
+import classNames from 'classnames';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import './confirmStyle.css';
 
-const OfferBox = (props) => {
+const OfferBox = props => {
   const findConversationInfo = () => {
     const { messagesPreview, id } = props;
     const participants = [id, props.data.User.id];
@@ -39,16 +39,16 @@ const OfferBox = (props) => {
 
   const resolveOffer = () => {
     confirmAlert({
-      title: "confirm",
-      message: "Are u sure?",
+      title: 'confirm',
+      message: 'Are u sure?',
       buttons: [
         {
-          label: "Yes",
+          label: 'Yes',
           onClick: () =>
-            props.setOfferStatus(props.data.User.id, props.data.id, "resolve"),
+            props.setOfferStatus(props.data.User.id, props.data.id, 'resolve'),
         },
         {
-          label: "No",
+          label: 'No',
         },
       ],
     });
@@ -56,22 +56,22 @@ const OfferBox = (props) => {
 
   const rejectOffer = () => {
     confirmAlert({
-      title: "confirm",
-      message: "Are u sure?",
+      title: 'confirm',
+      message: 'Are u sure?',
       buttons: [
         {
-          label: "Yes",
+          label: 'Yes',
           onClick: () =>
-            props.setOfferStatus(props.data.User.id, props.data.id, "reject"),
+            props.setOfferStatus(props.data.User.id, props.data.id, 'reject'),
         },
         {
-          label: "No",
+          label: 'No',
         },
       ],
     });
   };
 
-  const changeMark = (value) => {
+  const changeMark = value => {
     props.clearError();
     props.changeMark({
       mark: value,
@@ -86,13 +86,13 @@ const OfferBox = (props) => {
     if (status === CONSTANTS.OFFER_STATUS_REJECTED) {
       return (
         <i
-          className={classNames("fas fa-times-circle reject", styles.reject)}
+          className={classNames('fas fa-times-circle reject', styles.reject)}
         />
       );
     } else if (status === CONSTANTS.OFFER_STATUS_WON) {
       return (
         <i
-          className={classNames("fas fa-check-circle resolve", styles.resolve)}
+          className={classNames('fas fa-check-circle resolve', styles.resolve)}
         />
       );
     }
@@ -116,14 +116,14 @@ const OfferBox = (props) => {
           <div className={styles.creativeInfoContainer}>
             <img
               src={
-                avatar === "anon.png"
+                avatar === 'anon.png'
                   ? CONSTANTS.ANONYM_IMAGE_PATH
                   : `${CONSTANTS.publicURL}${avatar}`
               }
               alt="user"
             />
             <div className={styles.nameAndEmail}>
-              <span>{firstName + " " + lastName}</span>
+              <span>{firstName + ' ' + lastName}</span>
               <span>{email}</span>
             </div>
           </div>
@@ -214,16 +214,16 @@ const OfferBox = (props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    changeMark: (data) => dispatch(changeMark(data)),
+    changeMark: data => dispatch(changeMark(data)),
     clearError: () => dispatch(clearChangeMarkError()),
-    goToExpandedDialog: (data) => dispatch(goToExpandedDialog(data)),
-    changeShowImage: (data) => dispatch(changeShowImage(data)),
+    goToExpandedDialog: data => dispatch(goToExpandedDialog(data)),
+    changeShowImage: data => dispatch(changeShowImage(data)),
   };
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { changeMarkError, isShowModal } = state.contestByIdStore;
   const { id, role } = state.userStore.data;
   const { messagesPreview } = state.chatStore;

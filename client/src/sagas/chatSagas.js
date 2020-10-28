@@ -1,8 +1,8 @@
-import { put, select } from "redux-saga/effects";
-import ACTION from "../actions/actionTypes";
-import * as restController from "../api/rest/restController";
-import remove from "lodash/remove";
-import isEqual from "lodash/isEqual";
+import { put, select } from 'redux-saga/effects';
+import ACTION from '../actions/actionTypes';
+import * as restController from '../api/rest/restController';
+import remove from 'lodash/remove';
+import { isEqual } from 'lodash';
 
 export function* previewSaga() {
   try {
@@ -25,9 +25,9 @@ export function* getDialog(action) {
 export function* sendMessage(action) {
   try {
     const { data } = yield restController.newMessage(action.data);
-    const { messagesPreview } = yield select((state) => state.chatStore);
+    const { messagesPreview } = yield select(state => state.chatStore);
     let isNew = true;
-    messagesPreview.forEach((preview) => {
+    messagesPreview.forEach(preview => {
       if (isEqual(preview.participants, data.message.participants)) {
         preview.text = data.message.body;
         preview.sender = data.message.sender;
@@ -59,8 +59,8 @@ export function* sendMessage(action) {
 export function* changeChatFavorite(action) {
   try {
     const { data } = yield restController.changeChatFavorite(action.data);
-    const { messagesPreview } = yield select((state) => state.chatStore);
-    messagesPreview.forEach((preview) => {
+    const { messagesPreview } = yield select(state => state.chatStore);
+    messagesPreview.forEach(preview => {
       if (isEqual(preview.participants, data.participants))
         preview.favoriteList = data.favoriteList;
     });
@@ -76,8 +76,8 @@ export function* changeChatFavorite(action) {
 export function* changeChatBlock(action) {
   try {
     const { data } = yield restController.changeChatBlock(action.data);
-    const { messagesPreview } = yield select((state) => state.chatStore);
-    messagesPreview.forEach((preview) => {
+    const { messagesPreview } = yield select(state => state.chatStore);
+    messagesPreview.forEach(preview => {
       if (isEqual(preview.participants, data.participants))
         preview.blackList = data.blackList;
     });
@@ -102,7 +102,7 @@ export function* getCatalogListSaga(action) {
 export function* addChatToCatalog(action) {
   try {
     const { data } = yield restController.addChatToCatalog(action.data);
-    const { catalogList } = yield select((state) => state.chatStore);
+    const { catalogList } = yield select(state => state.chatStore);
     for (let i = 0; i < catalogList.length; i++) {
       if (catalogList[i]._id === data._id) {
         catalogList[i].chats = data.chats;
@@ -127,10 +127,10 @@ export function* createCatalog(action) {
 export function* deleteCatalog(action) {
   try {
     yield restController.deleteCatalog(action.data);
-    const { catalogList } = yield select((state) => state.chatStore);
+    const { catalogList } = yield select(state => state.chatStore);
     const newCatalogList = remove(
       catalogList,
-      (catalog) => action.data.catalogId !== catalog._id
+      catalog => action.data.catalogId !== catalog._id
     );
     yield put({ type: ACTION.DELETE_CATALOG_SUCCESS, data: newCatalogList });
   } catch (err) {
@@ -141,7 +141,7 @@ export function* deleteCatalog(action) {
 export function* removeChatFromCatalogSaga(action) {
   try {
     const { data } = yield restController.removeChatFromCatalog(action.data);
-    const { catalogList } = yield select((state) => state.chatStore);
+    const { catalogList } = yield select(state => state.chatStore);
     for (let i = 0; i < catalogList.length; i++) {
       if (catalogList[i]._id === data._id) {
         catalogList[i].chats = data.chats;
@@ -163,7 +163,7 @@ export function* removeChatFromCatalogSaga(action) {
 export function* changeCatalogName(action) {
   try {
     const { data } = yield restController.changeCatalogName(action.data);
-    const { catalogList } = yield select((state) => state.chatStore);
+    const { catalogList } = yield select(state => state.chatStore);
     for (let i = 0; i < catalogList.length; i++) {
       if (catalogList[i]._id === data._id) {
         catalogList[i].catalogName = data.catalogName;

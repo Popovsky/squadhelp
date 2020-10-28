@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./server
+    environment:
+      NODE_ENV: development
+      STATIC_DATA_PATH: /server/public
+    depends_on:
+      - postgres-db
+      - mongo-db
+    volumes:
+      - ./server:/server
+    ports:
+      - '5000:5000'
+
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+
+  postgres-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_USER=app_server
+      - POSTGRES_DB=squadhelp-db
+    ports:
+      - '5432:5432'

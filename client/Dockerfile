@@ -5,6 +5,8 @@ ENV NODE_ENV="production"
 
 RUN mkdir ./client
 
+COPY ./pa
+
 WORKDIR /client
 
 COPY . .
