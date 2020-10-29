@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import styles from './Header.module.sass';
 import { Link } from 'react-router-dom';
-import CONSTANTS from '../../constants';
+import CONSTANTS, { ROLES } from '../../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutRequest } from '../../actions/authActionCreators';
 import { authSelector } from '../../selectors';
@@ -255,7 +255,7 @@ function Header() {
               </li>
             </ul>
           </div>
-          {user && user.role === CONSTANTS.CUSTOMER && (
+          {user && user.role === ROLES.CUSTOMER && (
             <Link className={styles.startContestBtn} to="/startContest">
               START CONTEST
             </Link>

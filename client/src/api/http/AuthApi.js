@@ -61,10 +61,11 @@ class AuthApi {
     if (this.#_token) {
       config.headers['Authorization'] = `Bearer ${this.#_token}`;
     }
+    alert();
     return config;
   };
 
-  interceptResponse(response) {
+  interceptResponse = response => {
     const {
       config: { url },
       data,
@@ -80,12 +81,16 @@ class AuthApi {
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     }
     return response;
-  }
+  };
 
-  async interceptResponseError(error) {
+  interceptResponseError = async error => {
     const { response, config } = error;
     const { url } = config;
     const { status } = response;
+
+    if (status !== 401) {
+      throw error;
+    }
 
     if (
       status === 401 &&
@@ -102,8 +107,7 @@ class AuthApi {
         throw error;
       }
     }
-    throw error;
-  }
+  };
 }
 
 export default AuthApi;

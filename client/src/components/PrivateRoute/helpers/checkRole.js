@@ -10,7 +10,8 @@ function checkRole(userRole, rolesPermissions) {
   }
   if ('include' in rolesPermissions) {
     return rolesPermissions['include'].includes(userRole);
-  } else if ('exclude' in rolesPermissions) {
+  }
+  if ('exclude' in rolesPermissions) {
     return !rolesPermissions['exclude'].includes(userRole);
   }
   return false;

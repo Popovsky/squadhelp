@@ -3,6 +3,11 @@ const serverIP = 'localhost';
 
 export const REFRESH_TOKEN_KEY = 'refreshToken';
 
+export const ROLES = {
+  CUSTOMER: 'customer',
+  CREATOR: 'creator',
+};
+
 export default {
   CUSTOMER: 'customer',
   CREATOR: 'creator',

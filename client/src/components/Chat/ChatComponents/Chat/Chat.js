@@ -1,37 +1,37 @@
-import React from "react";
-import { connect } from "react-redux";
-import DialogListContainer from "../../DialogComponents/DialogListContainer/DialogListContainer";
-import styles from "./Chat.module.sass";
-import Dialog from "../../DialogComponents/Dialog/Dialog";
-import classNames from "classnames";
+import React from 'react';
+import { connect } from 'react-redux';
+import DialogListContainer from '../../DialogComponents/DialogListContainer/DialogListContainer';
+import styles from './Chat.module.sass';
+import Dialog from '../../DialogComponents/Dialog/Dialog';
+import classNames from 'classnames';
 import {
   changeChatShow,
   setPreviewChatMode,
   changeShowModeCatalog,
   clearChatError,
   getPreviewChat,
-} from "../../../../actions/actionCreator";
-import { chatController } from "../../../../api/ws/socketController";
-import CONSTANTS from "../../../../constants";
-import CatalogListContainer from "../../CatalogComponents/CatalogListContainer/CatalogListContainer";
-import CatalogCreation from "../../CatalogComponents/CatalogCreation/CatalogCreation";
-import CatalogListHeader from "../../CatalogComponents/CatalogListHeader/CatalogListHeader";
-import ChatError from "../../../ChatError/ChatError";
+} from '../../../../actions/actionCreator';
+import { chatController } from '../../../../api/ws/socketController';
+import CONSTANTS from '../../../../constants';
+import CatalogListContainer from '../../CatalogComponents/CatalogListContainer/CatalogListContainer';
+import CatalogCreation from '../../CatalogComponents/CatalogCreation/CatalogCreation';
+import CatalogListHeader from '../../CatalogComponents/CatalogListHeader/CatalogListHeader';
+import ChatError from '../../../ChatError/ChatError';
 
 class Chat extends React.Component {
   componentDidMount() {
-    chatController.subscribeChat(this.props.userStore.data.id);
+    chatController.subscribeChat(this.props.user.id);
     this.props.getPreviewChat();
   }
 
   componentWillUnmount() {
-    chatController.unsubscribeChat(this.props.userStore.data.id);
+    chatController.unsubscribeChat(this.props.user.id);
   }
 
   renderDialogList = () => {
     const { setChatPreviewMode } = this.props;
     const { chatMode, isShowChatsInCatalog } = this.props.chatStore;
-    const { id } = this.props.userStore.data;
+    const { id } = this.props.user;
     const {
       NORMAL_PREVIEW_CHAT_MODE,
       FAVORITE_PREVIEW_CHAT_MODE,
@@ -98,7 +98,7 @@ class Chat extends React.Component {
       isShowCatalogCreation,
       error,
     } = this.props.chatStore;
-    const { id } = this.props.userStore.data;
+    const { id } = this.props.user;
     const { changeShow, getPreviewChat } = this.props;
     return (
       <div
@@ -110,22 +110,25 @@ class Chat extends React.Component {
         {isShowCatalogCreation && <CatalogCreation />}
         {isExpanded ? <Dialog userId={id} /> : this.renderDialogList()}
         <div className={styles.toggleChat} onClick={() => changeShow()}>
-          {isShow ? "Hide Chat" : "Show Chat"}
+          {isShow ? 'Hide Chat' : 'Show Chat'}
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  const { chatStore, userStore } = state;
-  return { chatStore, userStore };
+const mapStateToProps = state => {
+  const {
+    chatStore,
+    auth: { user },
+  } = state;
+  return { chatStore, user };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     changeShow: () => dispatch(changeChatShow()),
-    setChatPreviewMode: (mode) => dispatch(setPreviewChatMode(mode)),
+    setChatPreviewMode: mode => dispatch(setPreviewChatMode(mode)),
     changeShowModeCatalog: () => dispatch(changeShowModeCatalog()),
     clearChatError: () => dispatch(clearChatError()),
     getPreviewChat: () => dispatch(getPreviewChat()),

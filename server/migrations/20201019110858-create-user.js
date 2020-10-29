@@ -1,9 +1,5 @@
 'use strict';
 
-const {
-  permissions: { roles },
-} = require('../config/app');
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Users', {

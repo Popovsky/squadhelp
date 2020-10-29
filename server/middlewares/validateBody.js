@@ -1,4 +1,4 @@
-module.exports = function validateBody(validationSchema) {
+function validateBody(validationSchema) {
   return async function (req, res, next) {
     try {
       const { body } = req;
@@ -8,4 +8,6 @@ module.exports = function validateBody(validationSchema) {
       next(err);
     }
   };
-};
+}
+
+module.exports = validateBody;

@@ -8,7 +8,7 @@ import { authSelector } from '../../selectors';
 
 function PrivateRoute({ roles, ...rest }) {
   const history = useHistory();
-  const { user, isFetching } = useSelector(authSelector);
+  const { isFetching, user } = useSelector(authSelector);
 
   if (isFetching) {
     return <Spinner />;

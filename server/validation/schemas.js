@@ -1,10 +1,10 @@
 const yup = require('yup');
 const {
   permissions: { roles },
-} = require('../config/app');
+} = require('../configs/config');
 
 const passwordRule = [
-  /(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])^.{8,64}$/,
+  /(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])^.{8,255}$/,
   'Your password must be at least 8 characters, and include at least one lowercase letter, one uppercase letter, and a number. ',
 ];
 

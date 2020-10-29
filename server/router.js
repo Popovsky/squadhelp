@@ -1,14 +1,14 @@
 const express = require('express');
 const basicMiddlewares = require('./middlewares/basicMiddlewares');
-const hashPass = require('./middlewares/hashPassMiddle');
 const userController = require('./controllers/userController');
 const contestController = require('./controllers/contestController');
-const validators = require('./middlewares/validators');
 const chatController = require('./controllers/chatController');
 const upload = require('./utils/fileUpload');
 const router = express.Router();
 const authRouter = require('./routes/auth');
 const checkAuthorization = require('./middlewares/checkAuthorization');
+const validateBody = require('./middlewares/validateBody');
+const { contestSchema } = require('./validation/schemas');
 
 router.use('/auth', authRouter);
 
@@ -21,7 +21,7 @@ router.post(
   basicMiddlewares.onlyForCustomer,
   upload.uploadContestFiles,
   basicMiddlewares.parseBody,
-  validators.validateContestCreation,
+  validateBody(contestSchema),
   userController.payment
 );
 

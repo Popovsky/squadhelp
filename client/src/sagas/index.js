@@ -28,6 +28,16 @@ import {
 import AUTH_ACTION_TYPES from '../actions/authActionTypes';
 
 function* rootSaga() {
+  // my super cool code
+  // AUTH
+  yield takeLatest(AUTH_ACTION_TYPES.LOGIN_REQUEST, AuthSagas.loginSaga);
+  yield takeLatest(AUTH_ACTION_TYPES.SIGNUP_REQUEST, AuthSagas.signUpSaga);
+  yield takeLatest(
+    AUTH_ACTION_TYPES.REFRESH_AUTH_REQUEST,
+    AuthSagas.refreshAuthSaga
+  );
+  yield takeLatest(AUTH_ACTION_TYPES.LOGOUT_REQUEST, AuthSagas.logoutSaga);
+  // legacy
   yield takeEvery(ACTION.GET_DATA_FOR_CONTEST_ACTION, dataForContestSaga);
   yield takeLatest(ACTION.PAYMENT_ACTION, paymentSaga);
   yield takeLatest(ACTION.CASHOUT_ACTION, cashoutSaga);
@@ -56,15 +66,6 @@ function* rootSaga() {
     removeChatFromCatalogSaga
   );
   yield takeLatest(ACTION.CHANGE_CATALOG_NAME_REQUEST, changeCatalogName);
-  // my super cool code
-  // AUTH
-  yield takeLatest(AUTH_ACTION_TYPES.LOGIN_REQUEST, AuthSagas.loginSaga);
-  yield takeLatest(AUTH_ACTION_TYPES.SIGNUP_REQUEST, AuthSagas.signUpSaga);
-  yield takeLatest(
-    AUTH_ACTION_TYPES.REFRESH_REQUEST,
-    AuthSagas.refreshAuthSaga
-  );
-  yield takeLatest(AUTH_ACTION_TYPES.LOGOUT_REQUEST, AuthSagas.logoutSaga);
 }
 
 export default rootSaga;

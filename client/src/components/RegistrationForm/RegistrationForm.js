@@ -1,23 +1,22 @@
-import React from "react";
-import Error from "../Error/Error";
-import { connect } from "react-redux";
-import { authActionRegister, clearAuth } from "../../actions/actionCreator";
-import { Redirect } from "react-router-dom";
-import styles from "./RegistrationForm.module.sass";
-import { Field, reduxForm } from "redux-form";
-import FormInput from "../FormInput/FormInput";
-import RoleInput from "../RoleInput/RoleInput";
-import AgreeTermOfServiceInput from "../AgreeTermOfServiceInput/AgreeTermOfServiceInput";
-import CONSTANTS from "../../constants";
-import customValidator from "../../validators/validator";
-import Schems from "../../validators/validationSchems";
+import React from 'react';
+import Error from '../Error/Error';
+import { connect } from 'react-redux';
+import { authActionRegister, clearAuth } from '../../actions/actionCreator';
+import styles from './RegistrationForm.module.sass';
+import { Field, reduxForm } from 'redux-form';
+import FormInput from '../FormInput/FormInput';
+import RoleInput from '../RoleInput/RoleInput';
+import AgreeTermOfServiceInput from '../AgreeTermOfServiceInput/AgreeTermOfServiceInput';
+import CONSTANTS, { ROLES } from '../../constants';
+import customValidator from '../../validators/validator';
+import Schems from '../../validators/validationSchems';
 
 class RegistrationForm extends React.Component {
   componentWillUnmount() {
     this.props.authClear();
   }
 
-  clicked = (values) => {
+  clicked = values => {
     this.props.register({
       firstName: values.firstName,
       lastName: values.lastName,
@@ -127,20 +126,20 @@ class RegistrationForm extends React.Component {
             <Field
               name="role"
               type="radio"
-              value={CONSTANTS.CUSTOMER}
+              value={ROLES.CUSTOMER}
               strRole="Join As a Buyer"
               infoRole="I am looking for a Name, Logo or Tagline for my business, brand or product."
               component={RoleInput}
-              id={CONSTANTS.CUSTOMER}
+              id={ROLES.CUSTOMER}
             />
             <Field
               name="role"
               type="radio"
-              value={CONSTANTS.CREATOR}
+              value={ROLES.CREATOR}
               strRole="Join As a Creative"
               infoRole="I plan to submit name ideas, Logo designs or sell names in Domain Marketplace."
               component={RoleInput}
-              id={CONSTANTS.CREATOR}
+              id={ROLES.CREATOR}
             />
           </div>
           <div className={styles.termsOfService}>
@@ -168,17 +167,17 @@ class RegistrationForm extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     auth: state.auth,
     initialValues: {
-      role: CONSTANTS.CUSTOMER,
+      role: ROLES.CUSTOMER,
     },
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  register: (data) => dispatch(authActionRegister(data)),
+const mapDispatchToProps = dispatch => ({
+  register: data => dispatch(authActionRegister(data)),
   authClear: () => dispatch(clearAuth()),
 });
 
@@ -187,7 +186,7 @@ export default connect(
   mapDispatchToProps
 )(
   reduxForm({
-    form: "login",
+    form: 'login',
     validate: customValidator(Schems.RegistrationSchem),
   })(RegistrationForm)
 );

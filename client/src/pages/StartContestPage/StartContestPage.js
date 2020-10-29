@@ -1,25 +1,24 @@
-import React from "react";
-import { selectBundle } from "../../actions/actionCreator";
-import { connect } from "react-redux";
-import BundleBox from "../../components/BundleBox/BundleBox";
-import { Route } from "react-router-dom";
-import CONSTANTS from "../../constants";
-import styles from "./StartContestPage.module.sass";
-import Footer from "../../components/Footer/Footer";
-import ProgressBar from "../../components/ProgressBar/ProgressBar";
-import Header from "../../components/Header/Header";
+import React from 'react';
+import { selectBundle } from '../../actions/actionCreator';
+import { connect } from 'react-redux';
+import BundleBox from '../../components/BundleBox/BundleBox';
+import { ROLES } from '../../constants';
+import styles from './StartContestPage.module.sass';
+import Footer from '../../components/Footer/Footer';
+import ProgressBar from '../../components/ProgressBar/ProgressBar';
+import Header from '../../components/Header/Header';
 
-const StartContestPage = (props) => {
-  if (props.userStore.data.role !== CONSTANTS.CUSTOMER) {
-    props.history.replace("/");
+const StartContestPage = props => {
+  if (props.userStore.data.role !== ROLES.CUSTOMER) {
+    props.history.replace('/');
   }
 
-  const setBundle = (bundleStr) => {
-    const array = bundleStr.toLowerCase().split("+");
+  const setBundle = bundleStr => {
+    const array = bundleStr.toLowerCase().split('+');
     const bundleList = {};
     bundleList.first = array[0];
     for (let i = 0; i < array.length; i++) {
-      bundleList[array[i]] = i === array.length - 1 ? "payment" : array[i + 1];
+      bundleList[array[i]] = i === array.length - 1 ? 'payment' : array[i + 1];
     }
     props.choseBundle(bundleList);
     props.history.push(`/startContest/${bundleList.first}Contest`);
@@ -53,19 +52,19 @@ const StartContestPage = (props) => {
         </div>
         <div className={styles.baseBundles}>
           <BundleBox
-            path={["Name.png"]}
+            path={['Name.png']}
             header="Name"
             describe="Get up and running with the perfect name."
             setBundle={setBundle}
           />
           <BundleBox
-            path={["Logo.png"]}
+            path={['Logo.png']}
             header="Logo"
             describe="Kickstart your venture with a unique, memorable logo."
             setBundle={setBundle}
           />
           <BundleBox
-            path={["Tagline.png"]}
+            path={['Tagline.png']}
             header="Tagline"
             describe="Connect deeply with your target audience with an on-target tagline."
             setBundle={setBundle}
@@ -84,25 +83,25 @@ const StartContestPage = (props) => {
         </div>
         <div className={styles.baseBundles}>
           <BundleBox
-            path={["Name.png", "Logo.png"]}
+            path={['Name.png', 'Logo.png']}
             header="Name+Logo"
             describe="Get the essentials needed to establish your brand together and save."
             setBundle={setBundle}
           />
           <BundleBox
-            path={["Name.png", "Tagline.png"]}
+            path={['Name.png', 'Tagline.png']}
             header="Name+Tagline"
             describe="Communicate your vision with the perfect Name/Tagline combo."
             setBundle={setBundle}
           />
           <BundleBox
-            path={["Logo.png", "Tagline.png"]}
+            path={['Logo.png', 'Tagline.png']}
             header="Tagline+Logo"
             describe="Description for Logo + Tagline will come here."
             setBundle={setBundle}
           />
           <BundleBox
-            path={["Name.png", "Logo.png", "Tagline.png"]}
+            path={['Name.png', 'Logo.png', 'Tagline.png']}
             header="Name+Tagline+Logo"
             describe="Establish your entire brand identity and save with this bundle."
             setBundle={setBundle}
@@ -114,14 +113,14 @@ const StartContestPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { bundleStore, userStore } = state;
   return { bundleStore, userStore };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    choseBundle: (bundle) => dispatch(selectBundle(bundle)),
+    choseBundle: bundle => dispatch(selectBundle(bundle)),
   };
 };
 

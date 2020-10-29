@@ -1,11 +1,11 @@
-import React from "react";
-import styles from "../../Brief/Brief.module.sass";
-import CONSTANTS from "../../../constants";
-import LogoContestSpecialInfo from "./LogoContestSpecialInfo";
-import NameContestSpecialInfo from "./NameContestSpecialInfo";
-import TaglineContestSpecialInfo from "./TaglineContestSpecialInfo";
+import React from 'react';
+import styles from '../../Brief/Brief.module.sass';
+import CONSTANTS, { ROLES } from '../../../constants';
+import LogoContestSpecialInfo from './LogoContestSpecialInfo';
+import NameContestSpecialInfo from './NameContestSpecialInfo';
+import TaglineContestSpecialInfo from './TaglineContestSpecialInfo';
 
-const ContestInfo = (props) => {
+const ContestInfo = props => {
   const { changeEditContest, userId, contestData, role, goChat } = props;
   const {
     typeOfTagline,
@@ -38,7 +38,7 @@ const ContestInfo = (props) => {
               Edit
             </div>
           )}
-          {role !== CONSTANTS.CUSTOMER && (
+          {role !== ROLES.CUSTOMER && (
             <i onClick={goChat} className="fas fa-comments" />
           )}
         </div>
@@ -70,7 +70,7 @@ const ContestInfo = (props) => {
         </div>
         <div className={styles.dataContainer}>
           <span className={styles.label}>
-            Description target customers of company{" "}
+            Description target customers of company{' '}
           </span>
           <span className={styles.data}>{targetCustomer}</span>
         </div>

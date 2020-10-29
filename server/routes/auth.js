@@ -9,11 +9,9 @@ authRouter.post(
   AuthController.login
 );
 
-authRouter.post(
-  '/signup',
-  validateBody(ValidationSchemas.signUpSchema),
-  AuthController.signUp
-);
+const validateBodyOnSignUp = validateBody(ValidationSchemas.signUpSchema);
+
+authRouter.post('/signup', validateBodyOnSignUp, AuthController.signUp);
 
 authRouter.post('/refresh', AuthController.refresh);
 

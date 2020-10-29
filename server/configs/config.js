@@ -5,7 +5,7 @@ const config = {
     tokenSecret: process.env.ACCESS_TOKEN_SECRET || 'access token secret value',
   },
   permissions: {
-    roles: ['customer', 'creator'],
+    roles: ['customer', 'creator', 'moderator'],
   },
 };
 

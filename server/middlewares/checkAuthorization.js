@@ -1,6 +1,6 @@
 const JwtService = require('./../services/jwtService');
 const createHttpError = require('http-errors');
-const config = require('../config/app');
+const config = require('../configs/config');
 
 const {
   jwt: { tokenSecret },

@@ -3,7 +3,7 @@ const { hashSync, compare } = require('bcrypt');
 const { Model } = require('sequelize');
 const {
   permissions: { roles },
-} = require('../config/app');
+} = require('../configs/config');
 const { SALT_ROUNDS } = require('./../constants');
 
 module.exports = (sequelize, DataTypes) => {

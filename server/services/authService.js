@@ -3,7 +3,7 @@ const { Sequelize, User, RefreshToken } = require('./../models');
 const JwtService = require('./jwtService');
 const { DEVICES_PER_USER_LIMIT, REFRESH_TOKEN_EXP } = require('../constants');
 const { v4: uuidV4 } = require('uuid');
-const config = require('../config/app');
+const config = require('../configs/config');
 
 const {
   jwt: { tokenExpiresIn, tokenSecret },
