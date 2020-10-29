@@ -1,4 +1,9 @@
 'use strict';
+
+const {
+  permissions: { roles },
+} = require('../config/app');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Users', {
@@ -34,7 +39,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       role: {
-        type: Sequelize.ENUM('customer', 'creator'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       balance: {

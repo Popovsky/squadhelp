@@ -1,6 +1,9 @@
 'use strict';
 const { hashSync, compare } = require('bcrypt');
 const { Model } = require('sequelize');
+const {
+  permissions: { roles },
+} = require('../config/app');
 const { SALT_ROUNDS } = require('./../constants');
 
 module.exports = (sequelize, DataTypes) => {
@@ -49,18 +52,33 @@ module.exports = (sequelize, DataTypes) => {
         set(value) {
           this.setDataValue('password', hashSync(value, SALT_ROUNDS));
         },
+        validate: {
+          notNull: true,
+          notEmpty: true,
+        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        validate: {
+          isEmail: true,
+        },
       },
       avatar: {
         type: DataTypes.STRING,
       },
       role: {
-        type: DataTypes.ENUM('customer', 'creator'),
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          checkRoleValue(value) {
+            if (roles.includes(value)) {
+              return;
+            }
+            throw new Error(`Role "${value}" is not valid value!`);
+          },
+        },
       },
       balance: {
         type: DataTypes.DECIMAL,

@@ -14,15 +14,6 @@ router.use('/auth', authRouter);
 
 router.use(checkAuthorization);
 
-router.post(
-  '/registration',
-  validators.validateRegistrationData,
-  hashPass,
-  userController.registration
-);
-
-router.post('/login', validators.validateLogin, userController.login);
-
 router.post('/dataForContest', contestController.dataForContest);
 
 router.post(
