@@ -23,4 +23,9 @@ const createAuthSaga = apiMethod => {
 
 export const loginSaga = createAuthSaga(Api.auth.login);
 export const signUpSaga = createAuthSaga(Api.auth.signUp);
-export const refreshSaga = createAuthSaga(Api.auth.refresh);
+export const refreshAuthSaga = createAuthSaga(Api.auth.refresh);
+
+export const logoutSaga = function* () {
+  yield Api.auth.logout();
+  yield put(AuthActionCreators.logoutRequestSuccess());
+};

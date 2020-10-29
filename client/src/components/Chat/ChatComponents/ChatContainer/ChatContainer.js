@@ -1,15 +1,14 @@
-import React from "react";
-import { connect } from "react-redux";
-import Chat from "../Chat/Chat";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../../selectors';
+import Chat from '../Chat/Chat';
 
-const ChatContainer = (props) => {
-  const { data } = props;
-  return <>{data ? <Chat /> : null}</>;
+const ChatContainer = () => {
+  const user = useSelector(userSelector);
+  if (user) {
+    return <Chat />;
+  }
+  return null;
 };
 
-const mapStateToProps = (state) => {
-  const { data } = state.userStore;
-  return { data };
-};
-
-export default connect(mapStateToProps, null)(ChatContainer);
+export default ChatContainer;

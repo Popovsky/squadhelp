@@ -7,9 +7,13 @@ import { initSocket } from './../api/ws/socketController';
 
 const sagaMiddleware = createSagaMiddleware();
 
+const composeEnhancers = composeWithDevTools({
+  trace: true,
+});
+
 const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware))
+  composeEnhancers(applyMiddleware(sagaMiddleware))
 );
 sagaMiddleware.run(rootSaga);
 

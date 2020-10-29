@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import authReducer from './authReducer';
-import getUserReducer from './userReducer';
 import dataForContestReducer from './dataForContestReducer';
 import payReducer from './payReducer';
 import getContestsReducer from './getContestsReducer';
@@ -14,7 +13,6 @@ import userProfileReducer from './userProfileReducer';
 
 const rootReducer = combineReducers({
   form: formReducer,
-  userStore: getUserReducer,
   auth: authReducer, // quality mark
   dataForContest: dataForContestReducer,
   payment: payReducer,

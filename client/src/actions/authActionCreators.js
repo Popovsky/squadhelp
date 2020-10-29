@@ -39,7 +39,7 @@ export const signUpRequest = values => ({
  * @returns {Action}
  */
 export const refreshAuthRequest = values => ({
-  type: AUTH_ACTION_TYPES.REFRESH_REQUEST,
+  type: AUTH_ACTION_TYPES.REFRESH_AUTH_REQUEST,
   payload: {
     values,
   },
@@ -77,4 +77,12 @@ export const authRequestFailed = err => ({
   payload: {
     error: err,
   },
+});
+
+export const logoutRequest = () => ({
+  type: AUTH_ACTION_TYPES.LOGOUT_REQUEST,
+});
+
+export const logoutRequestSuccess = () => ({
+  type: AUTH_ACTION_TYPES.LOGOUT_REQUEST_SUCCESS,
 });

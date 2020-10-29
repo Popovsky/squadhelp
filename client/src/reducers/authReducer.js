@@ -28,6 +28,9 @@ const handlers = {
     draftState.isFetching = false;
     draftState.error = error;
   }),
+  [AUTH_ACTION_TYPES.LOGOUT_REQUEST_SUCCESS]: () => ({
+    ...initialState,
+  }),
 };
 
 const authReducer = createReducer(initialState, handlers);
