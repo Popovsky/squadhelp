@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {
   sequelize,
   Sequelize,
@@ -5,19 +6,17 @@ const {
   Offer,
   Select,
   Rating,
+  Contest,
 } = require('../models');
 const ServerError = require('../errors/ServerError');
-const _ = require('lodash');
 const contestQueries = require('./queries/contestQueries');
 const userQueries = require('./queries/userQueries');
-const controller = require('./../socketInit');
+const controller = require('../socketInit');
 const UtilFunctions = require('../utils/functions');
-const NotFound = require('../errors/UserNotFoundError');
-const CONSTANTS = require('./../constants');
+const CONSTANTS = require('../constants');
 
 module.exports.dataForContest = async (req, res, next) => {
-  let response = {};
-  const { body } = req;
+  const response = {};
   try {
     const whereOption = {
       type: {
@@ -32,9 +31,10 @@ module.exports.dataForContest = async (req, res, next) => {
       where: whereOption,
     });
     if (!characteristics) {
-      return next(new ServerError());
+      next(new ServerError());
+      return;
     }
-    characteristics.forEach(characteristic => {
+    characteristics.forEach((characteristic) => {
       if (!response[characteristic.type]) {
         response[characteristic.type] = [];
       }
@@ -48,7 +48,7 @@ module.exports.dataForContest = async (req, res, next) => {
 
 module.exports.getContestById = async (req, res, next) => {
   try {
-    let contestInfo = await Contests.findOne({
+    let contestInfo = await Contest.findOne({
       where: { id: req.headers.contestid },
       order: [[Offer, 'id', 'asc']],
       include: [
@@ -86,7 +86,7 @@ module.exports.getContestById = async (req, res, next) => {
       ],
     });
     contestInfo = contestInfo.get({ plain: true });
-    contestInfo.Offers.forEach(offer => {
+    contestInfo.Offers.forEach((offer) => {
       if (offer.Rating) {
         offer.mark = offer.Rating.mark;
       }
@@ -108,7 +108,7 @@ module.exports.updateContest = async (req, res, next) => {
     req.body.fileName = req.file.filename;
     req.body.originalFileName = req.file.originalname;
   }
-  const contestId = req.body.contestId;
+  const { contestId } = req.body;
   delete req.body.contestId;
   try {
     const updatedContest = await contestQueries.updateContest(req.body, {
@@ -132,14 +132,14 @@ module.exports.setNewOffer = async (req, res, next) => {
   obj.userId = req.tokenData.userId;
   obj.contestId = req.body.contestId;
   try {
-    let result = await contestQueries.createOffer(obj);
+    const result = await contestQueries.createOffer(obj);
     delete result.contestId;
     delete result.userId;
     controller
       .getNotificationController()
       .emitEntryCreated(req.body.customerId);
-    const User = Object.assign({}, req.tokenData, { id: req.tokenData.userId });
-    res.send(Object.assign({}, result, { User }));
+    const user = { ...req.tokenData, id: req.tokenData.userId };
+    res.send({ ...result, User: user });
   } catch (e) {
     return next(new ServerError());
   }
@@ -148,14 +148,14 @@ module.exports.setNewOffer = async (req, res, next) => {
 const rejectOffer = async (offerId, creatorId, contestId) => {
   const rejectedOffer = await contestQueries.updateOffer(
     { status: CONSTANTS.OFFER_STATUS_REJECTED },
-    { id: offerId }
+    { id: offerId },
   );
   controller
     .getNotificationController()
     .emitChangeOfferStatus(
       creatorId,
       'Someone of yours offers was rejected',
-      contestId
+      contestId,
     );
   return rejectedOffer;
 };
@@ -166,28 +166,28 @@ const resolveOffer = async (
   orderId,
   offerId,
   priority,
-  transaction
+  transaction,
 ) => {
   const finishedContest = await contestQueries.updateContestStatus(
     {
       status: sequelize.literal(`   CASE
             WHEN "id"=${contestId}  AND "orderId"='${orderId}' THEN '${
-        CONSTANTS.CONTEST_STATUS_FINISHED
-      }'
+  CONSTANTS.CONTEST_STATUS_FINISHED
+}'
             WHEN "orderId"='${orderId}' AND "priority"=${priority + 1}  THEN '${
-        CONSTANTS.CONTEST_STATUS_ACTIVE
-      }'
+  CONSTANTS.CONTEST_STATUS_ACTIVE
+}'
             ELSE '${CONSTANTS.CONTEST_STATUS_PENDING}'
             END
     `),
     },
-    { orderId: orderId },
-    transaction
+    { orderId },
+    transaction,
   );
   await userQueries.updateUser(
-    { balance: sequelize.literal('balance + ' + finishedContest.prize) },
+    { balance: sequelize.literal(`balance + ${finishedContest.prize}`) },
     creatorId,
-    transaction
+    transaction,
   );
   const updatedOffers = await contestQueries.updateOfferStatus(
     {
@@ -198,16 +198,16 @@ const resolveOffer = async (
     `),
     },
     {
-      contestId: contestId,
+      contestId,
     },
-    transaction
+    transaction,
   );
   transaction.commit();
   const arrayRoomsId = [];
-  updatedOffers.forEach(offer => {
+  updatedOffers.forEach((offer) => {
     if (
-      offer.status === CONSTANTS.OFFER_STATUS_REJECTED &&
-      creatorId !== offer.userId
+      offer.status === CONSTANTS.OFFER_STATUS_REJECTED
+      && creatorId !== offer.userId
     ) {
       arrayRoomsId.push(offer.userId);
     }
@@ -217,7 +217,7 @@ const resolveOffer = async (
     .emitChangeOfferStatus(
       arrayRoomsId,
       'Someone of yours offers was rejected',
-      contestId
+      contestId,
     );
   controller
     .getNotificationController()
@@ -232,13 +232,13 @@ module.exports.setOfferStatus = async (req, res, next) => {
       const offer = await rejectOffer(
         req.body.offerId,
         req.body.creatorId,
-        req.body.contestId
+        req.body.contestId,
       );
       res.send(offer);
     } catch (err) {
       next(err);
     }
-  } else if (req.body.command === 'resolve')
+  } else if (req.body.command === 'resolve') {
     try {
       transaction = await sequelize.transaction();
       const winningOffer = await resolveOffer(
@@ -247,17 +247,18 @@ module.exports.setOfferStatus = async (req, res, next) => {
         req.body.orderId,
         req.body.offerId,
         req.body.priority,
-        transaction
+        transaction,
       );
       res.send(winningOffer);
     } catch (err) {
       transaction.rollback();
       next(err);
     }
+  }
 };
 
 module.exports.getCustomersContests = (req, res, next) => {
-  Contests.findAll({
+  Contest.findAll({
     where: { status: req.headers.status, userId: req.tokenData.userId },
     limit: req.body.limit,
     offset: req.body.offset ? req.body.offset : 0,
@@ -270,9 +271,9 @@ module.exports.getCustomersContests = (req, res, next) => {
       },
     ],
   })
-    .then(contests => {
+    .then((contests) => {
       contests.forEach(
-        contest => (contest.dataValues.count = contest.dataValues.Offers.length)
+        (contest) => { contest.dataValues.count = contest.dataValues.Offers.length; },
       );
       let haveMore = true;
       if (contests.length === 0) {
@@ -280,7 +281,7 @@ module.exports.getCustomersContests = (req, res, next) => {
       }
       res.send({ contests, haveMore });
     })
-    .catch(err => next(new ServerError(err)));
+    .catch((err) => next(new ServerError(err)));
 };
 
 module.exports.getContests = (req, res, next) => {
@@ -288,9 +289,9 @@ module.exports.getContests = (req, res, next) => {
     req.body.typeIndex,
     req.body.contestId,
     req.body.industry,
-    req.body.awardSort
+    req.body.awardSort,
   );
-  Contests.findAll({
+  Contest.findAll({
     where: predicates.where,
     order: predicates.order,
     limit: req.body.limit,
@@ -304,9 +305,9 @@ module.exports.getContests = (req, res, next) => {
       },
     ],
   })
-    .then(contests => {
+    .then((contests) => {
       contests.forEach(
-        contest => (contest.dataValues.count = contest.dataValues.Offers.length)
+        (contest) => (contest.dataValues.count = contest.dataValues.Offers.length),
       );
       let haveMore = true;
       if (contests.length === 0) {
@@ -314,7 +315,7 @@ module.exports.getContests = (req, res, next) => {
       }
       res.send({ contests, haveMore });
     })
-    .catch(err => {
+    .catch((err) => {
       next(new ServerError());
     });
 };

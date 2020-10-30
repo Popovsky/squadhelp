@@ -1,6 +1,6 @@
 const createHttpError = require('http-errors');
-const { User, RefreshToken } = require('./../models');
-const AuthService = require('./../services/authService');
+const { User, RefreshToken } = require('../models');
+const AuthService = require('../services/authService');
 
 exports.login = async (req, res, next) => {
   try {
@@ -14,9 +14,10 @@ exports.login = async (req, res, next) => {
 
     if (userInstance && (await userInstance.comparePassword(password))) {
       const data = await AuthService.createSession(userInstance);
-      return res.send({
+      res.status(201).send({
         data,
       });
+      return;
     }
     next(createHttpError(403, 'Incorrect password or email'));
   } catch (err) {
@@ -30,9 +31,10 @@ exports.signUp = async (req, res, next) => {
     const userInstance = await User.create(body);
     if (userInstance) {
       const data = await AuthService.createSession(userInstance);
-      return res.send({
+      res.status(201).send({
         data,
       });
+      return;
     }
     next(createHttpError(401));
   } catch (err) {
@@ -52,9 +54,10 @@ exports.refresh = async (req, res, next) => {
     });
     if (refreshTokenInstance && refreshTokenInstance.isUnexpired()) {
       const data = await AuthService.refreshSession(refreshTokenInstance);
-      return res.send({
+      res.send({
         data,
       });
+      return;
     }
     next(createHttpError(401));
   } catch (err) {

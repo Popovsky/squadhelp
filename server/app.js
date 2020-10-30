@@ -1,7 +1,8 @@
-const express = require('express');
-const router = require('./router');
 const cors = require('cors');
-const handlerError = require('./handlerError/handler');
+const express = require('express');
+
+const router = require('./router');
+const errorHandlers = require('./handlerError/handler');
 
 function createApp() {
   const app = express();
@@ -10,7 +11,13 @@ function createApp() {
   app.use('/public', express.static('public'));
 
   app.use('/api', router);
-  app.use(handlerError);
+
+  app.use(
+    errorHandlers.yupErrorHandler,
+    errorHandlers.sequelizeErrorHandler,
+    errorHandlers.httpErrorHandler,
+    errorHandlers.errorHandler,
+  );
   return app;
 }
 

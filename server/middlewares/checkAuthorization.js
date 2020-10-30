@@ -1,5 +1,5 @@
-const JwtService = require('./../services/jwtService');
 const createHttpError = require('http-errors');
+const JwtService = require('../services/jwtService');
 const config = require('../configs/config');
 
 const {
@@ -18,12 +18,8 @@ module.exports = async (req, res, next) => {
         return;
       }
     }
-    res.set(
-      'WWW-Authenticate',
-      `Bearer realm="Access to the staging site", charset="UTF-8`
-    );
     next(createHttpError(401));
   } catch (err) {
-    next(createHttpError(401, err?.message));
+    next(createHttpError(401));
   }
 };

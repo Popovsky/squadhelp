@@ -7,6 +7,14 @@ module.exports = {
     database: 'db',
     dialect: 'postgres',
   },
-  test: {},
+  test: {
+    host: 'localhost',
+    port: 5432,
+    password: null,
+    username: 'postgres',
+    database: 'squadhelp-test-2',
+    dialect: 'postgres',
+    logging: false,
+  },
   production: {},
 };
