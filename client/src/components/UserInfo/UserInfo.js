@@ -1,6 +1,6 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
-import { connect } from "react-redux";
+import {connect, useSelector} from "react-redux";
 import UpdateUserInfoForm from "../../components/UpdateUserInfoForm/UpdateUserInfoForm";
 import {
   updateUserData,
@@ -10,6 +10,7 @@ import CONSTANTS from "../../constants";
 import styles from "./UserInfo.module.sass";
 
 const UserInfo = (props) => {
+  const {user} = useSelector(state => state.auth);
   const updateUserData = (values) => {
     const formData = new FormData();
     formData.append("file", values.file);
@@ -19,7 +20,7 @@ const UserInfo = (props) => {
     props.updateUser(formData);
   };
 
-  const { isEdit, changeEditMode, data } = props;
+  const { isEdit, changeEditMode } = props;
   const {
     avatar,
     firstName,
@@ -28,7 +29,7 @@ const UserInfo = (props) => {
     email,
     role,
     balance,
-  } = data;
+  } = user;
   return (
     <div className={styles.mainContainer}>
       {isEdit ? (
@@ -85,9 +86,8 @@ const UserInfo = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { data } = state.userStore;
   const { isEdit } = state.userProfile;
-  return { data, isEdit };
+  return { isEdit };
 };
 
 const mapDispatchToProps = (dispatch) => {

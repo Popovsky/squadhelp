@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../components/Header/Header";
-import { connect } from "react-redux";
+import {connect, useSelector} from "react-redux";
 import styles from "./UserProfile.module.sass";
 import CONSTANTS from "../../constants";
 import UserInfo from "../../components/UserInfo/UserInfo";
@@ -14,14 +14,13 @@ import {
 import Error from "../../components/Error/Error";
 
 const UserProfile = (props) => {
+  const {user: {role, balance}} = useSelector(state => state.auth);
   const pay = (values) => {
     const { number, expiry, cvc, sum } = values;
     props.cashOut({ number, expiry, cvc, sum });
   };
 
   const {
-    balance,
-    role,
     profileModeView,
     changeProfileModeView,
     error,
@@ -84,10 +83,9 @@ const UserProfile = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { balance, role } = state.userStore.data;
   const { profileModeView } = state.userProfile;
   const { error } = state.payment;
-  return { balance, role, profileModeView, error };
+  return { profileModeView, error };
 };
 
 const mapDispatchToProps = (dispatch) => {

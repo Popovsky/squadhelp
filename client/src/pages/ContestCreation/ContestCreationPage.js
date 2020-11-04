@@ -13,18 +13,19 @@ import BackButton from "../../components/BackButton/BackButton";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import history from "../../browserHistory";
 
 const ContestCreationPage = (props) => {
   const submitDataContest = (values) => {
     props.saveContest({ type: props.contestType, info: values });
-    props.history.push(
+    history.push(
       props.bundleStore.bundle[props.contestType] === "payment"
         ? "/payment"
         : props.bundleStore.bundle[props.contestType] + "Contest"
     );
   };
 
-  !props.bundleStore.bundle && props.history.replace("/startContest");
+  !props.bundleStore.bundle && history.replace("/startContest");
   const contestData = props.contestStore.contests[props.contestType]
     ? props.contestStore.contests[props.contestType]
     : { contestType: props.contestType };

@@ -5,7 +5,6 @@ const config = require('../configs/config');
 const {
   jwt: { tokenSecret },
 } = config;
-
 module.exports = async (req, res, next) => {
   try {
     const authorizationHeaderValue = req.get('Authorization');

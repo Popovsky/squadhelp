@@ -1,6 +1,6 @@
 import React from 'react';
 import { selectBundle } from '../../actions/actionCreator';
-import { connect } from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import BundleBox from '../../components/BundleBox/BundleBox';
 import { ROLES } from '../../constants';
 import styles from './StartContestPage.module.sass';
@@ -9,7 +9,8 @@ import ProgressBar from '../../components/ProgressBar/ProgressBar';
 import Header from '../../components/Header/Header';
 
 const StartContestPage = props => {
-  if (props.userStore.data.role !== ROLES.CUSTOMER) {
+  const {user: {role}} = useSelector(state => state.auth);
+  if (role !== ROLES.CUSTOMER) {
     props.history.replace('/');
   }
 
@@ -114,8 +115,8 @@ const StartContestPage = props => {
 };
 
 const mapStateToProps = state => {
-  const { bundleStore, userStore } = state;
-  return { bundleStore, userStore };
+  const { bundleStore } = state;
+  return { bundleStore };
 };
 
 const mapDispatchToProps = dispatch => {

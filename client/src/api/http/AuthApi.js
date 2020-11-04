@@ -1,4 +1,4 @@
-import { REFRESH_TOKEN_KEY } from '../../constants';
+import CONSTANTS, { REFRESH_TOKEN_KEY } from '../../constants';
 
 class AuthApi {
   #_client;
@@ -11,10 +11,10 @@ class AuthApi {
      this.#_client.interceptors.request.use(
        this.interceptRequest,
        err => Promise.reject(err));
-    // this.#_client.interceptors.response.use(
-    //   this.interceptResponse,
-    //   this.interceptResponseError
-    // );
+    this.#_client.interceptors.response.use(
+      this.interceptResponse,
+      this.interceptResponseError
+    );
   }
 
   /**
@@ -60,10 +60,10 @@ class AuthApi {
   };
 
   interceptRequest = config => {
+    this.#_token = localStorage.getItem(CONSTANTS.ACCESS_TOKEN);
     if (this.#_token) {
       config.headers['Authorization'] = `Bearer ${this.#_token}`;
     }
-    alert();
     return config;
   };
 
@@ -73,7 +73,7 @@ class AuthApi {
       data,
     } = response;
 
-    if (url.indexOf(this.url) === 0) {
+    if (url.indexOf(this.url) === 25) {
       const {
         data: {
           tokenPair: { accessToken, refreshToken },
@@ -81,6 +81,7 @@ class AuthApi {
       } = data;
       this.#_token = accessToken;
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+      localStorage.setItem(CONSTANTS.ACCESS_TOKEN, accessToken);
     }
     return response;
   };
