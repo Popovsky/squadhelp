@@ -140,8 +140,7 @@ module.exports.payment = async (req, res, next) => {
     const {
       body: { cvc, expiry, price, number },
     } = req;
-    const squadhelpCreditCardNumber = process.env.SQUADHELP_CREDIT_CARD_NUMBER;
-
+    const squadhelpCreditCardNumber = process.env.SQUADHELP_CREDIT_CARD_NUMBER ?? '4564654564564564';
     const clientCreditCard = await CreditCard.findOne({
       where: {
         cardNumber: number.replace(/ /g, ''),
@@ -150,28 +149,24 @@ module.exports.payment = async (req, res, next) => {
       },
       transaction,
     });
-
     const squadhelpCreditCard = await CreditCard.findOne({
       where: {
         cardNumber: squadhelpCreditCardNumber,
       },
       transaction,
     });
-
     await clientCreditCard.update(
       {
-        balance: Sequelize.literal(`"Banks"."balance" - ${price}`),
+        balance: Sequelize.literal(`"CreditCards"."balance" - ${price}`),
       },
       { transaction }
     );
-
     await squadhelpCreditCard.update(
       {
-        balance: Sequelize.literal(`"Banks"."balance" + ${price}`),
+        balance: Sequelize.literal(`"CreditCards"."balance" + ${price}`),
       },
       { transaction }
     );
-
     const orderId = uuid();
     req.body.contests.forEach((contest, index) => {
       const prize =
@@ -180,7 +175,7 @@ module.exports.payment = async (req, res, next) => {
           : Math.floor(req.body.price / req.body.contests.length);
       contest = Object.assign(contest, {
         status: index === 0 ? 'active' : 'pending',
-        userId: req.tokenData.userId,
+        userId: req.tokenPayload.userId,
         priority: index + 1,
         orderId: orderId,
         createdAt: moment().format('YYYY-MM-DD HH:mm'),

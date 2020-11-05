@@ -47,6 +47,7 @@ module.exports.dataForContest = async (req, res, next) => {
 };
 
 module.exports.getContestById = async (req, res, next) => {
+  console.log('getContestById');
   try {
     let contestInfo = await Contest.findOne({
       where: { id: req.headers.contestid },
@@ -63,8 +64,8 @@ module.exports.getContestById = async (req, res, next) => {
           model: Offer,
           required: false,
           where:
-            req.tokenData.role === CONSTANTS.CREATOR
-              ? { userId: req.tokenData.userId }
+            req.tokenPayload.role === CONSTANTS.CREATOR
+              ? { userId: req.tokenPayload.userId }
               : {},
           attributes: { exclude: ['userId', 'contestId'] },
           include: [
@@ -78,7 +79,7 @@ module.exports.getContestById = async (req, res, next) => {
             {
               model: Rating,
               required: false,
-              where: { userId: req.tokenData.userId },
+              where: { userId: req.tokenPayload.userId },
               attributes: { exclude: ['userId', 'offerId'] },
             },
           ],
@@ -113,7 +114,7 @@ module.exports.updateContest = async (req, res, next) => {
   try {
     const updatedContest = await contestQueries.updateContest(req.body, {
       id: contestId,
-      userId: req.tokenData.userId,
+      userId: req.tokenPayload.userId,
     });
     res.send(updatedContest);
   } catch (e) {
@@ -259,7 +260,7 @@ module.exports.setOfferStatus = async (req, res, next) => {
 
 module.exports.getCustomersContests = (req, res, next) => {
   Contest.findAll({
-    where: { status: req.headers.status, userId: req.tokenData.userId },
+    where: { status: req.headers.status, userId: req.tokenPayload.userId },
     limit: req.body.limit,
     offset: req.body.offset ? req.body.offset : 0,
     order: [['id', 'DESC']],

@@ -19,11 +19,11 @@ module.exports.parseBody = (req, res, next) => {
 module.exports.canGetContest = async (req, res, next) => {
   let result = null;
   try {
-    if (req.tokenData.role === CONSTANTS.CUSTOMER) {
-      result = await bd.Contests.findOne({
-        where: { id: req.headers.contestid, userId: req.tokenData.userId },
+    if (req.tokenPayload.userRole === CONSTANTS.CUSTOMER) {
+      result = await bd.Contest.findOne({
+        where: { id: req.headers.contestid, userId: req.tokenPayload.userId },
       });
-    } else if (req.tokenData.role === CONSTANTS.CREATOR) {
+    } else if (req.tokenPayload.userRole === CONSTANTS.CREATOR) {
       result = await bd.Contests.findOne({
         where: {
           id: req.headers.contestid,
@@ -51,7 +51,7 @@ module.exports.onlyForCreative = (req, res, next) => {
 };
 
 module.exports.onlyForCustomer = (req, res, next) => {
-  if (req.tokenData.role === CONSTANTS.CREATOR) {
+  if (req.tokenPayload.userRole === CONSTANTS.CREATOR) {
     return next(new RightsError('this page only for customers'));
   } else {
     next();

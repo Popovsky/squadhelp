@@ -135,7 +135,7 @@ module.exports.getPreview = async (req, res, next) => {
       },
       {
         $match: {
-          'conversationData.participants': req.tokenData.userId,
+          'conversationData.participants': req.tokenPayload.userId,
         },
       },
       {
@@ -159,7 +159,7 @@ module.exports.getPreview = async (req, res, next) => {
     conversations.forEach((conversation) => {
       interlocutors.push(
         conversation.participants.find(
-          (participant) => participant !== req.tokenData.userId,
+          (participant) => participant !== req.tokenPayload.userId,
         ),
       );
     });

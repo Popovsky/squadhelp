@@ -115,7 +115,7 @@ class ContestPage extends React.Component {
   };
 
   render() {
-    const { role } = this.props.userStore.data;
+    const { user: {role} } = this.props;
     const {
       contestByIdStore,
       changeShowImage,
@@ -213,8 +213,8 @@ class ContestPage extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { contestByIdStore, userStore, chatStore } = state;
-  return { contestByIdStore, userStore, chatStore };
+  const { contestByIdStore, auth: {user}, chatStore } = state;
+  return { contestByIdStore, user, chatStore };
 };
 
 const mapDispatchToProps = (dispatch) => {

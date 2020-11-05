@@ -22,7 +22,7 @@ router.post(
   basicMiddlewares.onlyForCustomer,
   upload.uploadContestFiles,
   basicMiddlewares.parseBody,
-  validateBody(contestSchema),
+  // validateBody(contestSchema),
   userController.payment,
 );
 
