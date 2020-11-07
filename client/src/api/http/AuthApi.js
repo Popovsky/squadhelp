@@ -1,4 +1,4 @@
-import CONSTANTS, { REFRESH_TOKEN_KEY } from '../../constants';
+import { REFRESH_TOKEN_KEY, ACCESS_TOKEN_KEY } from '../../constants';
 
 class AuthApi {
   #_client;
@@ -60,7 +60,7 @@ class AuthApi {
   };
 
   interceptRequest = config => {
-    this.#_token = localStorage.getItem(CONSTANTS.ACCESS_TOKEN);
+    this.#_token = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (this.#_token) {
       config.headers['Authorization'] = `Bearer ${this.#_token}`;
     }
@@ -81,7 +81,7 @@ class AuthApi {
       } = data;
       this.#_token = accessToken;
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-      localStorage.setItem(CONSTANTS.ACCESS_TOKEN, accessToken);
+      localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
     }
     return response;
   };

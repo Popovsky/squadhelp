@@ -21,6 +21,7 @@ const userQueries = require('./queries/userQueries');
 const bankQueries = require('./queries/bankQueries');
 const ratingQueries = require('./queries/ratingQueries');
 const BadRequestError = require('../errors/BadRequestError');
+const _ = require('lodash');
 
 module.exports.login = async (req, res, next) => {
   try {
@@ -198,18 +199,10 @@ module.exports.updateUser = async (req, res, next) => {
     }
     const updatedUser = await userQueries.updateUser(
       req.body,
-      req.tokenData.userId
+      req.tokenPayload.userId
     );
-    res.send({
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      displayName: updatedUser.displayName,
-      avatar: updatedUser.avatar,
-      email: updatedUser.email,
-      balance: updatedUser.balance,
-      role: updatedUser.role,
-      id: updatedUser.id,
-    });
+    const preparedUser = _.omit(updatedUser,['password']);
+    res.send(preparedUser);
   } catch (err) {
     next(err);
   }

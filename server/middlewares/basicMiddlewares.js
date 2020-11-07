@@ -24,7 +24,7 @@ module.exports.canGetContest = async (req, res, next) => {
         where: { id: req.headers.contestid, userId: req.tokenPayload.userId },
       });
     } else if (req.tokenPayload.userRole === CONSTANTS.CREATOR) {
-      result = await bd.Contests.findOne({
+      result = await bd.Contest.findOne({
         where: {
           id: req.headers.contestid,
           status: {
@@ -43,7 +43,7 @@ module.exports.canGetContest = async (req, res, next) => {
 };
 
 module.exports.onlyForCreative = (req, res, next) => {
-  if (req.tokenData.role === CONSTANTS.CUSTOMER) {
+  if (req.tokenPayload.userRole === CONSTANTS.CUSTOMER) {
     next(new RightsError());
   } else {
     next();
@@ -59,11 +59,11 @@ module.exports.onlyForCustomer = (req, res, next) => {
 };
 
 module.exports.canSendOffer = async (req, res, next) => {
-  if (req.tokenData.role === CONSTANTS.CUSTOMER) {
+  if (req.tokenPayload.userRole === CONSTANTS.CUSTOMER) {
     return next(new RightsError());
   }
   try {
-    const result = await bd.Contests.findOne({
+    const result = await bd.Contest.findOne({
       where: {
         id: req.body.contestId,
       },
@@ -83,9 +83,9 @@ module.exports.canSendOffer = async (req, res, next) => {
 
 module.exports.onlyForCustomerWhoCreateContest = async (req, res, next) => {
   try {
-    const result = await bd.Contests.findOne({
+    const result = await bd.Contest.findOne({
       where: {
-        userId: req.tokenData.userId,
+        userId: req.tokenPayload.userId,
         id: req.body.contestId,
         status: CONSTANTS.CONTEST_STATUS_ACTIVE,
       },
@@ -101,9 +101,9 @@ module.exports.onlyForCustomerWhoCreateContest = async (req, res, next) => {
 
 module.exports.canUpdateContest = async (req, res, next) => {
   try {
-    const result = bd.Contests.findOne({
+    const result = bd.Contest.findOne({
       where: {
-        userId: req.tokenData.userId,
+        userId: req.tokenPayload.userId,
         id: req.body.contestId,
         status: { [bd.Sequelize.Op.not]: CONSTANTS.CONTEST_STATUS_FINISHED },
       },

@@ -26,6 +26,7 @@ import {
   changeCatalogName,
 } from './chatSagas';
 import AUTH_ACTION_TYPES from '../actions/authActionTypes';
+import {updateUserData} from "./userSaga";
 
 function* rootSaga() {
   // my super cool code
@@ -66,6 +67,8 @@ function* rootSaga() {
     removeChatFromCatalogSaga
   );
   yield takeLatest(ACTION.CHANGE_CATALOG_NAME_REQUEST, changeCatalogName);
+  // my code here
+  yield takeLatest(ACTION.UPDATE_USER_DATA, updateUserData);
 }
 
 export default rootSaga;

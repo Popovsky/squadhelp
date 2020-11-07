@@ -1,6 +1,7 @@
 import produce from 'immer';
 import AUTH_ACTION_TYPES from '../actions/authActionTypes';
 import createReducer from './helpers/createReducer';
+import ACTION from "../actions/actionTypes";
 
 const initialState = {
   user: null,
@@ -30,6 +31,11 @@ const handlers = {
   }),
   [AUTH_ACTION_TYPES.LOGOUT_REQUEST_SUCCESS]: () => ({
     ...initialState,
+  }),
+  [ACTION.UPDATE_USER_DATA_SUCCESS]: produce((draftState, action) => {
+    const {data} = action;
+    draftState.isFetching = false;
+    draftState.user = data;
   }),
 };
 

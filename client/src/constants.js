@@ -2,6 +2,7 @@ const env = process.env.NODE_ENV || 'development';
 const serverIP = 'localhost';
 
 export const REFRESH_TOKEN_KEY = 'refreshToken';
+export const ACCESS_TOKEN_KEY = 'accessToken';
 
 export const ROLES = {
   CUSTOMER: 'customer',
